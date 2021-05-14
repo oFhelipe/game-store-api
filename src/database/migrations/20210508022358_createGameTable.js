@@ -8,7 +8,7 @@ exports.up = async function(knex) {
     table.string('cover'); //capa
     table.string('developer');  //desenvolvedora
     table.string('destributor'); //destribuidora
-    table.text('drescription');
+    table.text('description');
     table.float('price');
     table.string('platform');
     table.float('discount',[3],[2]); // 0 até 1
