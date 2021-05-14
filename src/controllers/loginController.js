@@ -31,8 +31,10 @@ module.exports = {
         birthday: user.birthday
       }
 
+      const secret = process.env.SECRET;
+
       //criar token de autenticação
-      const token = await jwt.sign(encryptedUser, 'secret');
+      const token = await jwt.sign(encryptedUser, secret);
 
       return res.json({ user:encryptedUser, token });
 

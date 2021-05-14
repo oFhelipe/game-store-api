@@ -101,5 +101,15 @@ module.exports = {
       console.log(error)
       return res.status(500).json({message:'Erro interno'})
     }
+  },
+
+  async getLancamentos(req, res) {
+    try {
+      const lancamentos = await con('game').select('*').limit(5);
+      return res.json(lancamentos); 
+    } catch (error) {
+      console.log(error);
+      return res.status(500).json({message:"Error interno"})
+    }
   }
 }
