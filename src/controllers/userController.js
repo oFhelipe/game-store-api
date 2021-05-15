@@ -22,6 +22,7 @@ module.exports = {
       return res.json(user);
   
     } catch (error) {
+      console.log(500)
       return res.status(500).json({ message: 'Erro interno do servidor' });
     }
   }
