@@ -83,15 +83,36 @@ module.exports = {
       const gamesQuery = con('game').select('*')
 
       if(platform) {
-        gamesQuery.where({platform})
+        gamesQuery.andWhere('platform', 'like', `%${platform}%`)
       }
 
       if(gender) {
-        gamesQuery.where({gender})
+        gamesQuery.andWhere({gender})
       }
 
       if(promotion){
-        gamesQuery.where('discount', '<=', promotion)
+        gamesQuery.andWhere('discount', '>', '0')
+        gamesQuery.andWhere('discount', '<=', promotion/100)
+      }
+
+      if(order) {
+          switch (order) {
+            case 'novo':
+              gamesQuery.orderBy('release', 'asc')
+              break;
+            case 'antigo':
+              gamesQuery.orderBy('release', 'desc')
+              break;
+            case 'crescente':
+              gamesQuery.orderBy('price', 'asc')
+              break;
+            case 'decrescente':
+              gamesQuery.orderBy('price', 'desc')
+              break;
+          
+            default:
+              break;
+          }
       }
 
       gamesQuery.then((games)=>{
