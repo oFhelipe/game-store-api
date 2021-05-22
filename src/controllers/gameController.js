@@ -61,7 +61,7 @@ module.exports = {
         price,
         platform: thePlataform,
         discount,
-        gender,
+        gender: gender.toLowerCase(),
         size,
         multiplayer,
         release,
@@ -86,20 +86,23 @@ module.exports = {
         gamesQuery.andWhere('name', 'like', `%${game}%`)
       }
 
-      if(platform) {
+      if(platform && platform !== 'todas') {
         gamesQuery.andWhere('platform', 'like', `%${platform}%`)
       }
 
-      if(gender) {
-        gamesQuery.andWhere({gender})
+      if(gender && gender !== 'sem') {
+        gamesQuery.andWhere({gender:gender.toLowerCase()})
       }
 
-      if(promotion){
+
+      if(promotion && promotion !== 'sem'){
         gamesQuery.andWhere('discount', '>', '0')
-        gamesQuery.andWhere('discount', '<=', promotion/100)
+        if(promotion !== 'todas'){
+          gamesQuery.andWhere('discount', '<=', promotion/100)
+        }
       }
 
-      if(order) {
+      if(order && order !== 'sem') {
           switch (order) {
             case 'novo':
               gamesQuery.orderBy('release', 'asc')
