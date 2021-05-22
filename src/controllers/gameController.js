@@ -79,8 +79,17 @@ module.exports = {
   },
   async getGames(req, res) {
     try {
-      const { platform, promotion, gender, order, game } = req.query
+      const { platform, promotion, gender, order, game, page } = req.query
       const gamesQuery = con('game').select('*')
+
+      if(page){
+        const limit = 6;
+        const offset = (page - 1) * limit;
+
+        gamesQuery.offset(offset);
+        gamesQuery.limit(limit)
+
+      }
 
       if(game) {
         gamesQuery.andWhere('name', 'like', `%${game}%`)
