@@ -81,6 +81,7 @@ module.exports = {
     try {
       const { platform, promotion, gender, order, game, page } = req.query
       const gamesQuery = con('game').select('*')
+      const countQuery = con('game').count('id as count')
 
       if(page){
         const limit = 6;
@@ -93,21 +94,26 @@ module.exports = {
 
       if(game) {
         gamesQuery.andWhere('name', 'like', `%${game}%`)
+        countQuery.andWhere('name', 'like', `%${game}%`)
       }
 
       if(platform && platform !== 'todas') {
         gamesQuery.andWhere('platform', 'like', `%${platform}%`)
+        countQuery.andWhere('platform', 'like', `%${platform}%`)
       }
 
       if(gender && gender !== 'sem') {
         gamesQuery.andWhere({gender:gender.toLowerCase()})
+        countQuery.andWhere({gender:gender.toLowerCase()})
       }
 
 
       if(promotion && promotion !== 'sem'){
         gamesQuery.andWhere('discount', '>', '0')
+        countQuery.andWhere('discount', '>', '0')
         if(promotion !== 'todas'){
           gamesQuery.andWhere('discount', '<=', promotion/100)
+          countQuery.andWhere('discount', '<=', promotion/100)
         }
       }
 
@@ -132,7 +138,9 @@ module.exports = {
       }
 
       gamesQuery.then((games)=>{
-        return res.json(games)
+        return countQuery.then(([{count}])=>{
+          return res.json({games, count})
+        })
       })
     } catch (error) {
       console.log(error)
