@@ -156,5 +156,19 @@ module.exports = {
       console.log(error);
       return res.status(500).json({message:"Error interno"})
     }
+  },
+
+  async index(req, res) {
+    try {
+      const { gameId } = req.params;
+      const [ game ] = await con('game').select('*').where({ id: gameId }).limit(1);
+      if(!game) {
+        return res.status(500).json({message:"Error interno"});
+      }
+      return res.json(game);
+      
+    } catch (error) {
+      return res.status(500).json({message:"Error interno"});
+    }
   }
 }
