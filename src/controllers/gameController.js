@@ -162,10 +162,18 @@ module.exports = {
     try {
       const { gameId } = req.params;
       const [ game ] = await con('game').select('*').where({ id: gameId }).limit(1);
+
       if(!game) {
         return res.status(500).json({message:"Error interno"});
       }
-      return res.json(game);
+
+      const theGame = {
+        ...game, 
+        multimedia: JSON.parse(game.multimedia),
+        platform: JSON.parse(game.platform),
+      }
+      
+      return res.json(theGame);
       
     } catch (error) {
       return res.status(500).json({message:"Error interno"});
