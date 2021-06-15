@@ -218,13 +218,16 @@ module.exports = {
           filename: 'logo.png',
           path: `${__dirname}/../assets/images/logo.png`,
           cid: 'logo'
-        },
-        {
+        }
+      ]
+
+      if(metodoPagamento === "boleto") {
+        attachments.push({
           filename: 'gameCodigo.png',
           path: `${__dirname}/../assets/images/gameCodigo.png`,
           cid: 'gameCodigo'
-        }
-      ]
+        })
+      }
 
       let emailText = `
         <body>
@@ -254,7 +257,7 @@ module.exports = {
               <p style='width: fit-content; padding: 5px; color: #fff; background-color: #000; font-weight: bold; margin:0 auto;'>Pedido N°: ${ Math.floor(Math.random() * 100000) }</p>
 
               ${
-                metodoPagamento === "boleto" && "<img style='width: 90%; object-fit: cover; margin-top: 8px; height: 40px;' src='cid:gameCodigo' alt='codigo de compra' />"
+                metodoPagamento === "boleto" ? "<img style='width: 90%; object-fit: cover; margin-top: 8px; height: 40px;' src='cid:gameCodigo' alt='codigo de compra' />" : "<></>"
               }
               <p style="font-size: .70rem">Email de modelo -- Este email é falso, favor ignora-lo </p>
             </div>
