@@ -13,6 +13,7 @@ const auth = (req, res, next) => {
 
   jwt.verify(token, secret, (error, decoded) => {
     if (error) {
+      console.log(error)
       return res.status(401).json({message:'Usuario não autenticado'});
     }
     next();
