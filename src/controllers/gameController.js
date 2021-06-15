@@ -187,25 +187,44 @@ module.exports = {
 
   async confirmOrder (req, res) {
     try {
-      const { games, total, user } = req.body
+      const { games, total, user, metodoPagamento } = req.body
 
-      if (!games || !total || !user) {
+      if (!games || !total || !user || !metodoPagamento) {
         return res
           .status(406)
           .json({ message: 'Todas as informações são obrigatórias' })
       }
 
+      Date.prototype.addDays = function(days) {
+        var date = new Date(this.valueOf());
+        date.setDate(date.getDate() + days);
+        return date.toISOString();
+      }
+      let data  = new Date();
+      let dataIso   = String(data.addDays(5)).padStart(2,'0');
+      
+      let dataPagamento = dataIso.split("T")[0];
+
+      const theDataPagamento = dataPagamento.split("-").reverse().join("/");
+
       let gameList = '';
 
       for (const game of games) {
-        gameList += `<tr><td style="font-size:1.3rem; border-top: 1px solid #dee2e6; padding: .75rem; vertical-align: top;">${game.name}</td></tr>`
+        gameList += `<tr><td style="font-size:1rem; border-top: 1px solid #dee2e6; padding: .75rem; vertical-align: top;">${ game.name }</td> <td style="font-size:1rem; border-top: 1px solid #dee2e6; padding: .75rem; vertical-align: top;">${ parseFloat(game.price - (game.price * game.discount)).toFixed(2)  }</td></tr>`
       }
 
-      const attachments = [{
-        filename: 'logo.png',
-        path: `${__dirname}/../assets/images/logo.png`,
-        cid: 'logo'
-      }]
+      const attachments = [
+        {
+          filename: 'logo.png',
+          path: `${__dirname}/../assets/images/logo.png`,
+          cid: 'logo'
+        },
+        {
+          filename: 'gameCodigo.png',
+          path: `${__dirname}/../assets/images/gameCodigo.png`,
+          cid: 'gameCodigo'
+        }
+      ]
 
       let emailText = `
         <body>
@@ -222,6 +241,7 @@ module.exports = {
                 <thead>
                   <tr>
                     <th style='background-color: #212529; color: #fff; padding: .60rem;'>Game</th>
+                    <th style='background-color: #212529; color: #fff; padding: .60rem;'>Preço</th>
                   </tr>
                 </thead>
                 <tbody>
@@ -229,10 +249,14 @@ module.exports = {
                 </tbody>
               </table>
 
-              <p style='font-weight: bold; font-size: 1rem;' class='total'>Valor total da compra: R$ ${total}</p>
-              <p style='font-weight: bold; font-size: 1rem;'>Prazo de validade: 11/11/1111</p>
-              <p style='width: fit-content; padding: 5px; color: #fff; background-color: #000; font-weight: bold; margin:0 auto;'>Pedido N°: 123456</p>
+              <p style='font-weight: bold; font-size: 1rem;' class='total'>Valor total da compra: R$ ${total.toFixed(2)}</p>
+              <p style='font-weight: bold; font-size: 1rem;'>Data de Vencimento: ${theDataPagamento}</p>
+              <p style='width: fit-content; padding: 5px; color: #fff; background-color: #000; font-weight: bold; margin:0 auto;'>Pedido N°: ${ Math.floor(Math.random() * 100000) }</p>
 
+              ${
+                metodoPagamento === "boleto" && "<img style='width: 90%; object-fit: cover; margin-top: 8px; height: 40px;' src='cid:gameCodigo' alt='codigo de compra' />"
+              }
+              <p style="font-size: .70rem">Email de modelo -- Este email é falso, favor ignora-lo </p>
             </div>
           </div>
         </body>
