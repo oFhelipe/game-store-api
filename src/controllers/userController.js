@@ -105,7 +105,7 @@ module.exports = {
       `
 
       await transporter.sendMail({
-        from: 'GameStore <nao.responsa.game.store@gmail.com>',
+        from: `GameStore <` + `${process.env.EMAIL}>`,
         to: user.email,
         subject: 'Recuperação de senha',
         html: emailText,
