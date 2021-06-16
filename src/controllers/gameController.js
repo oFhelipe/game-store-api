@@ -266,7 +266,7 @@ module.exports = {
       `
 
       await transporter.sendMail({
-        from: 'GameStore <nao.responsa.game.store@gmail.com>',
+        from: `GameStore <` + `${process.env.EMAIL}>`,
         to: user.email,
         subject: 'Lista de produtos comprados',
         html: emailText,
